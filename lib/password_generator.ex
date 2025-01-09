@@ -1,7 +1,4 @@
 defmodule Generator do
-  @moduledoc """
-  A console application for generating passwords.
-  """
 
   @symbols "@!$#%^&*"
   @word_list ~w(
@@ -27,11 +24,9 @@ defmodule Generator do
     )
 
     if Keyword.get(opts, :help, false) do
-      print_help()
       System.halt(0)
     end
 
-    # Use Keyword.get instead of Map.get
     type = Keyword.get(opts, :type, "chars")
     min_length = Keyword.get(opts, :"min-length", (if type == "chars", do: 8, else: 2))
     max_length = Keyword.get(opts, :"max-length", (if type == "chars", do: 16, else: 5))
@@ -41,7 +36,6 @@ defmodule Generator do
     separator = Keyword.get(opts, :separator, "-")
     file = Keyword.get(opts, :file, nil)
 
-    # Validate min and max lengths
     if min_length > max_length do
       IO.puts("Error: --min-length cannot be greater than --max-length")
       System.halt(1)
@@ -57,7 +51,6 @@ defmodule Generator do
           System.halt(1)
       end
 
-    # Output or save to file
     if file do
       case File.write(file, password) do
         :ok -> :ok
@@ -108,23 +101,5 @@ defmodule Generator do
       end)
 
     Enum.join(words, separator)
-  end
-
-  defp print_help do
-    IO.puts("""
-    Usage:
-      GENERATOR.exe [options]
-
-    Options:
-      --type=chars|words         Type of password to generate (default: chars)
-      --min-length=NUMBER        Minimum length (default: 8 for chars, 2 for words)
-      --max-length=NUMBER        Maximum length (default: 16 for chars, 5 for words)
-      --uppercase                Include uppercase letters (chars) or capitalize words (words)
-      --numbers                  Include numbers in the password (chars)
-      --symbols                  Include symbols in the password (chars)
-      --separator=SEPARATOR      Separator between words (words, default: -)
-      --file=PATH                Save the password to a file instead of printing
-      -h, --help                 Show this help message
-    """)
   end
 end
